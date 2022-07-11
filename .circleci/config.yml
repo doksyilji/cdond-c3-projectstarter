@@ -161,6 +161,10 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - run:
+          name: Install tar utility
+          command: |
+            yum install -y tar gzip
       - aws-cli/setup:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-region: US_EAST_1_REGION
@@ -195,7 +199,7 @@ jobs:
               --output text >> .circleci/ansible/inventory.txt
               # exit 1
       - persist_to_workspace:
-          root: .circleci/ansible
+          root: ~/.circleci/ansible
           paths:
             - inventory.txt
       - destroy-environment
@@ -205,15 +209,15 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-      - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      # - build-frontend
+      # - build-backend
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      # - scan-backend:
+      #     requires: [build-backend]
+      # - scan-frontend:
+      #     requires: [build-frontend]
+      - deploy-infrastructure
+          # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
