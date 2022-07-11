@@ -157,6 +157,11 @@ jobs:
       - image: amazon/aws-cli
     steps:
       # Checkout code from git
+      - checkout
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-region: US_EAST_1_REGION
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -173,7 +178,8 @@ jobs:
               --template-file .circleci/files/frontend.yml \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-              --tags project=udapeople 
+              --tags project=udapeople \
+              --region us-east-1 
               # exit 1
       - run:
           name: Add back-end ip to ansible inventory
@@ -182,6 +188,7 @@ jobs:
               aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name = tag:Name,Values = backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --region us-east-1 \
               --output text >> project/.circleci/ansible/inventory.txt
               # exit 1
       - persist_to_workspace:
