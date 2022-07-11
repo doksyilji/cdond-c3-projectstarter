@@ -199,9 +199,9 @@ jobs:
               --output text >> .circleci/ansible/inventory.txt
               # exit 1
       - persist_to_workspace:
-          root: ~/.circleci/ansible
+          root: ~/
           paths:
-            - inventory.txt
+            - project/.circleci/ansible/inventory.txt
       - destroy-environment
       # Here's where you will add some code to rollback on failure      
 
