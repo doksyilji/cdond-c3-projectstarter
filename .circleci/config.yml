@@ -203,7 +203,40 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment
+      # Here's where you will add some code to rollback on failure    
+
+  configure-infrastructure:
+    docker:
+      # Docker image here that supports Ansible
+      - image:  alpine:latest
+    steps:
+      # Checkout code from git
+      - checkout
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-region: US_EAST_1_REGION
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+      # Add ssh keys with fingerprint
+      - add_ssh_keys:
+          # You can get this ID in the section where you registered the SSH Key
+          fingerprints: "53:d6:66:21:ae:92:ca:dc:ff:a0:ea:1f:40:8c:07:94"
+      # attach workspace
+      - attach_workspace:
+          at: ~/project/.circleci/ansible/inventory.txt
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible &&
+            yum install -y tar gzip
+            # exit 1
+      - run:
+          name: Configure server
+          command: |
+              cd .circleci/ansible &&
+              ansible-playbook -i inventory.txt configure-server.yml
+              # exit 1
       # Here's where you will add some code to rollback on failure      
+      - destroy-environment
 
 
 workflows:
