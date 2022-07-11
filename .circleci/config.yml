@@ -110,8 +110,10 @@ jobs:
           name: check for known vulnerabilities in packages
           command: |
               cd backend &&
+              npm install minimist@1.2.6 &&
+              npm install ajv@^6.12.3 &&              
               npm install &&
-              npm install --save-dev webpack@5.73.0 &&
+              npm audit fix --audit-level=critical --force &&
               npm audit fix --force &&
               # npm install oauth-sign@^0.9.0
               npm audit --audit-level=critical
