@@ -222,7 +222,7 @@ jobs:
           fingerprints: "53:d6:66:21:ae:92:ca:dc:ff:a0:ea:1f:40:8c:07:94"
       # attach workspace
       - attach_workspace:
-          at: /.circleci/ansible
+          at: .circleci/ansible
       - run:
           name: Install dependencies
           command: |
@@ -231,7 +231,6 @@ jobs:
           name: Configure server
           command: |
               ansible-playbook -i inventory.txt configure-server.yml
-              # exit 1
       # Here's where you will add some code to rollback on failure      
       - destroy-environment
 
