@@ -71,6 +71,8 @@ jobs:
           command: |
             # Your code here
             cd backend &&
+            npm install minimist@1.2.6 &&
+            npm install ajv@^6.12.3 && 
             npm install &&
             npm run build
             # exit 1
