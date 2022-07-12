@@ -1,0 +1,44 @@
+---
+- name: "update apt packages."
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: "upgrade packages"
+  become: yes
+  apt:
+    upgrade: yes
+
+- name: remove dependencies that are no longer required
+  become: yes
+  apt:
+    autoremove: yes
+
+- name: "install dependencies."
+  become: yes
+  apt:
+    name: ["nodejs", "npm"]
+    state: latest
+    update_cache: yes
+
+- name: "install pm2"
+  become: yes
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present
+
+- name: Extract the archive file on the remote node
+  unarchive:
+    src: artifact.tar.gz
+    dest: /srv/
+
+- name: "stop pm2"
+  shell: |
+    pm2 stop default
+
+- name: "npm start"
+  shell: |
+    cd /srv &&
+    pm2 start npm -- start
