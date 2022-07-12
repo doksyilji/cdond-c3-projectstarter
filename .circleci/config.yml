@@ -350,7 +350,7 @@ jobs:
             # Zip the directory
             tar -czvf artifact.tar.gz backend
             mv artifact.tar.gz .circleci/ansible/
-            ls .circleci/ansible/files
+            ls .circleci/ansible/
             ansible-playbook -i /tmp_files/inventory.txt .circleci/ansible/deploy-backend.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
