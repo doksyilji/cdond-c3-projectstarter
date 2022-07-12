@@ -159,8 +159,6 @@ jobs:
       # Docker image here that supports AWS CLI
       - image: amazon/aws-cli
     
-    working_directory: /tmp
-    
     steps:
       # Checkout code from git
       - checkout
@@ -191,8 +189,8 @@ jobs:
               --tags project=udapeople \
               --region us-east-1
 
-      - run: mkdir -p some_files
-      - run: echo [web] > some_files/inventory.txt
+      - run: mkdir -p tmp_files
+      - run: echo [web] > tmp_files/inventory.txt
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -200,12 +198,12 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name = tag:Name,Values = backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --region us-east-1 \
-              --output text >> some_files/inventory.txt
+              --output text >> tmp_files/inventory.txt
       - persist_to_workspace:
-          root: some_files
+          root: tmp_files
           paths:
             - inventory.txt
-      - run: cat /temp/some_files/inventory.txt
+      - run: cat /tmp_files/inventory.txt
       - destroy-environment
       # Here's where you will add some code to rollback on failure    
 
@@ -226,7 +224,7 @@ jobs:
           fingerprints: "53:d6:66:21:ae:92:ca:dc:ff:a0:ea:1f:40:8c:07:94"
       # attach workspace
       - attach_workspace:
-          at: /temp/some_files
+          at: /tmp_files
       - run:
           name: Install dependencies
           command: |
@@ -234,7 +232,7 @@ jobs:
       - run:
           name: Configure server
           command: |
-              ansible-playbook -i tmp/some_files/inventory.txt .circleci/ansible/configure-server.yml
+              ansible-playbook -i /tmp_files/inventory.txt .circleci/ansible/configure-server.yml
       # Here's where you will add some code to rollback on failure      
       - destroy-environment
 
@@ -321,7 +319,7 @@ jobs:
           fingerprints: "53:d6:66:21:ae:92:ca:dc:ff:a0:ea:1f:40:8c:07:94"      
       # attach workspace
       - attach_workspace:
-          at: /tmp/some_files
+          at: /tmp_files
       - run:
           name: Install dependencies
           command: |
@@ -340,7 +338,7 @@ jobs:
             tar -C backend -czvf artifact.tar.gz . &&
             echo "Contents  of the inventory.txt file is -------" &&
             cat /tmp/some_files/inventory.txt &&
-            ansible-playbook -i /tmp/some_files/inventory.txt deploy-backend.yml
+            ansible-playbook -i /tmp_files/inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment
       - revert-migrations
