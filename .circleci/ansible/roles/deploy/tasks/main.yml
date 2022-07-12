@@ -40,11 +40,18 @@
     src: "artifact.tar.gz"
     dest: "~/web/"
 
+- name: "install npm"
+  shell: |
+    cd ~/web
+
+- name: "install npm"
+  shell: |
+    npm install
+
 - name: "stop pm2"
   shell: |
     pm2 stop default
 
 - name: "npm start"
   shell: |
-    cd ~/web &&
     pm2 start npm -- start
