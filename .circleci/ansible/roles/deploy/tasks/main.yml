@@ -29,10 +29,16 @@
     production: yes
     state: present
 
+- name: Creates directory
+  file:
+    path: ~/web
+    state: directory
+
+
 - name: Extract the archive file on the remote node
   unarchive:
-    src: ~/project/artifact.tar.gz
-    dest: /srv/
+    src: "../artifact.tar.gz"
+    dest: "~/web/artifact"
 
 - name: "stop pm2"
   shell: |
@@ -40,5 +46,5 @@
 
 - name: "npm start"
   shell: |
-    cd /srv &&
+    cd ~/web &&
     pm2 start npm -- start
