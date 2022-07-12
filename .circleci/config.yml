@@ -26,10 +26,9 @@ commands:
       workflow_id:
         type: string     
     steps:
-      - run: sudo apt-get update && sudo apt-get install -y ca-certificates
       - run:
           name: Revert migrations
-          # Add when this will run
+          when: on_fail
           command: |
             SUCCESS=$(curl --insecure  https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_<< parameters.workflow_id >>)
             # Logic for reverting the database state
@@ -350,7 +349,8 @@ jobs:
             cd ..
             # Zip the directory
             tar -czvf artifact.tar.gz backend
-            mv artifact.tar.gz .circleci/ansible/files
+            mv artifact.tar.gz .circleci/ansible/
+            ls .circleci/ansible/files
             ansible-playbook -i /tmp_files/inventory.txt .circleci/ansible/deploy-backend.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment:

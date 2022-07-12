@@ -37,8 +37,8 @@
 
 - name: Extract the archive file on the remote node
   unarchive:
-    src: "artifact.tar.gz"
-    dest: "~/web/artifact"
+    src: ".circleci/ansible/artifact.tar.gz"
+    dest: "~/web/"
 
 - name: "stop pm2"
   shell: |
