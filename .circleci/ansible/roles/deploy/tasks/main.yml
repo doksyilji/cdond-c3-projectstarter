@@ -31,7 +31,7 @@
 
 - name: Extract the archive file on the remote node
   unarchive:
-    src: artifact.tar.gz
+    src: ~/artifact.tar.gz
     dest: /srv/
 
 - name: "stop pm2"
