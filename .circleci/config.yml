@@ -344,10 +344,6 @@ jobs:
           name: Deploy backend
           command: |
             cd backend &&
-            npm install minimist@1.2.6 &&
-            npm install ajv@^6.12.3 &&              
-            npm audit fix --audit-level=critical --force &&
-            npm audit fix --force &&
             npm i &&
             npm run build &&
             cd .. &&
