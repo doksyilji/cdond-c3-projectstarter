@@ -337,8 +337,8 @@ jobs:
             # Zip the directory
             tar -C backend -czvf artifact.tar.gz . &&
             echo "Contents  of the inventory.txt file is -------" &&
-            cat /tmp/some_files/inventory.txt &&
-            ansible-playbook -i /tmp_files/inventory.txt deploy-backend.yml
+            cat tmp_files/inventory.txt &&
+            ansible-playbook -i tmp_files/inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment
       - revert-migrations
@@ -348,18 +348,18 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-      - deploy-infrastructure:
-            requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      # - build-frontend
+      # - build-backend
+      # - test-frontend:
+      #     requires: [build-frontend]
+      # - test-backend:
+      #     requires: [build-backend]
+      # - scan-backend:
+      #     requires: [build-backend]
+      # - scan-frontend:
+      #     requires: [build-frontend]
+      - deploy-infrastructure
+            # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
