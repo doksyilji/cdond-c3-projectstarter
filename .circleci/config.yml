@@ -14,10 +14,10 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            echo "Destroying environment: << parameters.workflow_id >> " &&
-            aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow_id>> --region us-east-1 &&
+            echo "Destroying environment: << parameters.workflow_id >> " 
+            aws s3 rb s3://udapeople-<<parameters.workflow_id>>  --force  
+            aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow_id>> --region us-east-1
             aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow_id>> --region us-east-1 
-            # exit 1
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -348,7 +348,8 @@ jobs:
             npm run build
             cd ..
             # Zip the directory
-            tar -czvf .circleci/ansible/files/artifact.tar.gz backend
+            tar -czvf artifact.tar.gz backend
+            mv artifact.tar.gz .circleci/files
             ansible-playbook -i /tmp_files/inventory.txt .circleci/ansible/deploy-backend.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
