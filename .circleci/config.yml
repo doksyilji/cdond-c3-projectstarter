@@ -264,7 +264,7 @@ jobs:
   deploy-frontend:
     docker:
       # Docker image here that supports AWS CLI
-      - image: amazon/aws-cli
+      - image: alpine:latest
     steps:
       # Checkout code from git
       - checkout
@@ -338,9 +338,10 @@ jobs:
             cd .. &&
             # Zip the directory
             tar -C backend -czvf artifact.tar.gz . &&
+            pwd
             echo "Contents  of the inventory.txt file is -------" &&
-            cat tmp_files/inventory.txt &&
-            ansible-playbook -i tmp_files/inventory.txt deploy-backend.yml
+            # cat tmp_files/inventory.txt &&
+            ansible-playbook -i /tmp_files/inventory.txt .circleci/ansible/deploy-backend.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment
       - revert-migrations
