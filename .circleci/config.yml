@@ -206,7 +206,8 @@ jobs:
           paths:
             - inventory.txt
       - run: cat tmp_files/inventory.txt
-      - destroy-environment
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
       # Here's where you will add some code to rollback on failure    
 
   configure-infrastructure:
@@ -348,7 +349,8 @@ jobs:
             # cat tmp_files/inventory.txt &&
             ansible-playbook -i /tmp_files/inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure
-      - destroy-environment
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
@@ -357,7 +359,7 @@ jobs:
       # Docker image here that supports AWS CLI
       - image: amazon/aws-cli
     steps:
-      # Checkout code from git
+      # Checkout code from git    
       - checkout
       - aws-cli/setup:
           aws-access-key-id: AWS_ACCESS_KEY_ID
@@ -378,11 +380,12 @@ jobs:
               --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
       # Here's where you will add some code to rollback on failure
-      - destroy-environment  
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}  
       - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
-  cleanup:
+  cleanup-work:
       docker:
         # Docker image here
         - image: amazon/aws-cli
