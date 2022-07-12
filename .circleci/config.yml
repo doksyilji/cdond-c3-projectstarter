@@ -249,8 +249,8 @@ jobs:
             cd backend &&
             npm install &&
             # Run and save the migration output
-            npm run migrations > migrations_dump.txt
-            # exit 1
+            npm run migrations > migrations_dump.txt &&
+            cat migrations_dump.txt
       - run: sudo apt-get update && sudo apt-get install -y ca-certificates
       - run:
           name: Send migration results to kvdb.io
@@ -276,8 +276,10 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible &&
-            yum install -y tar gzip &&
-            yum install python3
+            apk add --update python3 &&
+            apk add --update nodejs &&
+            apk add --npm &&
+            apk add --update tar gzip
       - run:
           name: Get backend url
           command: |
@@ -297,7 +299,7 @@ jobs:
             npm install &&
             npm run build &&
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist &&
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive &&
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive 
           # Here's where you will add some code to rollback on failure 
       - destroy-environment
       - revert-migrations     
@@ -324,9 +326,9 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible &&
-            yum install -y tar gzip &&
-            yum install nodejs &&
-            yum install npm
+            apk add --update tar gzip &&
+            apk add --update nodejs &&
+            apk add --update npm
       - run:
           name: Deploy backend
           command: |
@@ -348,18 +350,18 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
-      # - test-backend:
-      #     requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
-      - deploy-infrastructure
-            # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
