@@ -29,16 +29,11 @@
     production: yes
     state: present
 
-- name: Creates directory
-  file:
-    path: ~/web
-    state: directory
-
 
 - name: Extract the archive file on the remote node
   unarchive:
     src: "artifact.tar.gz"
-    dest: "/web"
+    dest: "/srv"
 
 - name: print to stdout
   command: ls
@@ -48,7 +43,13 @@
 
 - name: "change directory"
   shell: |
-    cd /web
+    cd /srv
+
+- name: print to stdout2
+  command: ls
+  register: contents2
+
+- debug: msg="{{ contents2.stdout }}"
 
 - name: "install npm"
   shell: |
