@@ -31,12 +31,12 @@
 
 - unarchive:
     src: artifact.tar.gz
-    dest: /srv/artifact
+    dest: /srv/
 
 - name: "change directory"
   shell: |
-    cd /srv/artifact
-    
+    cd /srv/
+
 - name: print to stdout
   command: ls
   register: contents
