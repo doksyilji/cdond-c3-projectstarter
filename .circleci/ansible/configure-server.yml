@@ -31,6 +31,6 @@
       wait_for:
         host: web
         port: 22       
-        delay: 600
+        delay: 210
   roles:
     - configure-server
