@@ -33,7 +33,7 @@
     src: artifact.tar.gz
     dest: /srv/
 
-- name: "install npm"
+- name: "start service"
   shell: |
     cd /srv/
     npm install
