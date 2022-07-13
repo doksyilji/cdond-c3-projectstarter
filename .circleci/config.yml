@@ -69,13 +69,11 @@ jobs:
       - run:
           name: Back-end build
           command: |
-            # Your code here
             cd backend &&
             npm install minimist@1.2.6 &&
             npm install ajv@^6.12.3 && 
             npm install &&
             npm run build
-            # exit 1
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -250,6 +248,7 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - run: sudo apt-get update && sudo apt-get install -y ca-certificates
       - restore_cache:
           name: Restore backend cache
           keys:
@@ -259,12 +258,8 @@ jobs:
           command: |
             cd backend
             npm install
-            # Run and save the migration output
             npm run migrations > migrations_dump.txt
-            echo "migrations start"
-            cat migrations_dump.txt
-            echo "migrations stop"
-      - run: sudo apt-get update && sudo apt-get install -y ca-certificates
+            cat ~/project/backend/migrations_dump.txt
       - run:
           name: Send migration results to kvdb.io
           command: |
@@ -272,7 +267,14 @@ jobs:
             then
                 curl https://kvdb.io/9tDAL53faqACSAjQTsGwmN/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
       # Here's where you will add some code to rollback on failure
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
 
   deploy-frontend:
     docker:
@@ -375,7 +377,6 @@ jobs:
             apk add --update curl 
             apk add --update nodejs
             apk add --update npm
-            apk add --update awscli
       - run:
           name: Get backend url
           command: |
