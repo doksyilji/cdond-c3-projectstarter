@@ -29,50 +29,13 @@
     production: yes
     state: present
 
-- name: print to stdout pwd
-  command: pwd
-  register: contents
-
-- debug: 
-    var: contents.stdout_lines
-
-- name: print to stdout base dir
-  command: ls
-  register: contents1
-
-- debug: 
-    var: contents1.stdout_lines
-
 - unarchive:
     src: artifact.tar.gz
     dest: /srv/
 
-- name: "change directory"
-  shell: |
-    cd /srv/
-
-- name: print to stdout pwd
-  command: pwd
-  register: contents2
-
-- debug: 
-    var: contents2.stdout_lines
-
-- name: print to stdout dir
-  command: ls
-  register: contents3
-
-- debug: 
-    var: contents3.stdout_lines
-
 - name: "install npm"
   shell: |
+    cd /srv/
     npm install
-
-- name: "stop pm2"
-  shell: |
     pm2 stop default
-
-- name: "npm start"
-  shell: |
     pm2 start npm -- start
