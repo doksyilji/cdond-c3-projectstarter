@@ -26,11 +26,12 @@
     - TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
     - TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"
 
-  pre_tasks:
-    - name: "wait 600 seconds for target connection to become reachable/usable."
-      wait_for:
-        host: web
-        port: 22       
-        delay: 210
+  # pre_tasks:
+  #   - name: "wait 210 seconds for target connection to become reachable/usable."
+  #     wait_for:
+  #       host: web
+  #       port: 22       
+  #       delay: 210
+  #       timeout: 0
   roles:
     - configure-server
