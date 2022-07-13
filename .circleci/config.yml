@@ -367,10 +367,14 @@ jobs:
   smoke-test:
     docker:
       # Lightweight Docker image
-      - image: alpine:latest 
+      - image: alpine:latest     
     steps:
       # Checkout code from git
       - checkout
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-region: US_EAST_1_REGION
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
       - run:
           name: Install dependencies
           command: |
