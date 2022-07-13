@@ -29,27 +29,22 @@
     production: yes
     state: present
 
+- name: Copy index test page
+  template:
+    src: "artifact.tar.gz"
+    dest: "/srv/artifact.tar.gz"
 
 - name: Extract the archive file on the remote node
-  unarchive:
-    src: "artifact.tar.gz"
-    dest: "/srv"
+  shell: |
+    cd /srv
+    tar -xf archive.tar.gz
+    rm archive.tar.gz
 
 - name: print to stdout
   command: ls
   register: contents
 
 - debug: msg="{{ contents.stdout }}"
-
-- name: "change directory"
-  shell: |
-    cd /srv
-
-- name: print to stdout2
-  command: ls
-  register: contents2
-
-- debug: msg="{{ contents2.stdout }}"
 
 - name: "install npm"
   shell: |
