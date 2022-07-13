@@ -34,14 +34,14 @@
   register: contents
 
 - debug: 
-    var: contents.std_out_lines
+    var: contents.stdout_lines
 
 - name: print to stdout base dir
   command: ls
   register: contents1
 
 - debug: 
-    var: contents1.std_out_lines
+    var: contents1.stdout_lines
 
 - unarchive:
     src: artifact.tar.gz
@@ -56,14 +56,14 @@
   register: contents2
 
 - debug: 
-    var: contents2.std_out_lines
+    var: contents2.stdout_lines
 
 - name: print to stdout dir
   command: ls
   register: contents3
 
 - debug: 
-    var: contents3.std_out_lines
+    var: contents3.stdout_lines
 
 - name: "install npm"
   shell: |
