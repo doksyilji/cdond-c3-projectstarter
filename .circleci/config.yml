@@ -249,6 +249,10 @@ jobs:
       # Checkout code from git
       - checkout
       - run: sudo apt-get update && sudo apt-get install -y ca-certificates
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-region: US_EAST_1_REGION
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
       - restore_cache:
           name: Restore backend cache
           keys:
@@ -265,7 +269,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-                curl https://kvdb.io/9tDAL53faqACSAjQTsGwmN/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+                curl -k https://kvdb.io/9tDAL53faqACSAjQTsGwmN/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - save_cache:
           paths: [backend/node_modules]
