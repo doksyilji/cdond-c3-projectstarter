@@ -32,7 +32,7 @@
 - name: Copy index test page
   template:
     src: "artifact.tar.gz"
-    dest: "/srv/artifact.tar.gz"
+    dest: "/srv"
 
 - name: Extract the archive file on the remote node
   shell: |
