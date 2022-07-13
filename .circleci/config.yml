@@ -348,7 +348,7 @@ jobs:
             npm run build
             cd ..
             # Zip the directory
-            tar -czvf artifact.tar.gz backend
+            tar -czf artifact.tar.gz backend
             mv artifact.tar.gz .circleci/ansible/artifact.tar.gz
             ls .circleci/ansible/
             ansible-playbook -i /tmp_files/inventory.txt .circleci/ansible/deploy-backend.yml
