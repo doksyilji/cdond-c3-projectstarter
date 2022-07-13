@@ -29,17 +29,14 @@
     production: yes
     state: present
 
-- name: Copy index test page
-  template:
-    src: "artifact.tar.gz"
-    dest: "/srv"
+- unarchive:
+    src: artifact.tar.gz
+    dest: /srv/artifact
 
-- name: Extract the archive file on the remote node
+- name: "change directory"
   shell: |
-    cd /srv
-    tar -xf archive.tar.gz
-    rm archive.tar.gz
-
+    cd /srv/artifact
+    
 - name: print to stdout
   command: ls
   register: contents
