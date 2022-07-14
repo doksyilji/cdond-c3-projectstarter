@@ -20,3 +20,4 @@
   #       timeout: 0
   roles:
     - configure-server
+    - configure-prometheus-node-exporter
