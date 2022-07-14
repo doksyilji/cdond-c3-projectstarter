@@ -470,7 +470,7 @@ jobs:
             name: Get old stack workflow id
             command: |
               # Fetch the Old workflow ID
-              export STACKS=($(aws cloudformation list-stacks --query 'StackSummaries[?contains(StackName, `${CIRCLE_WORKFLOW_ID:0:7}`) == `false`].StackName' --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
+              export OldWorkflowID=($(aws cloudformation list-stacks --query 'StackSummaries[?contains(StackName, `${CIRCLE_WORKFLOW_ID:0:7}`) == `false`].StackName' --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
               echo OldWorkflowID: "${OldWorkflowID:  -7}"
               echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
         - run:
@@ -478,6 +478,7 @@ jobs:
             command: |
               if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID:  -7}" ]]; then
               aws s3 rb "s3://udapeople-${OldWorkflowID:  -7}" --force
+              echo aws s3 rb s3://udapeople-"${OldWorkflowID:  -7}" --force
               sleep 5
               aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID:  -7}" --region us-east-1
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID:  -7}" --region us-east-1
