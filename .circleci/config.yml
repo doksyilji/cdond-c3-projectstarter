@@ -15,7 +15,7 @@ commands:
           when: on_fail
           command: |
             echo "Destroying environment: << parameters.workflow_id >> " 
-            aws s3 rb s3://udapeople-<<parameters.workflow_id>>  --force 
+            aws s3 rb "s3://udapeople-<<parameters.workflow_id>>"  --force 
             sleep 10 
             aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow_id>> --region us-east-1
             aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow_id>> --region us-east-1 
@@ -30,7 +30,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl --insecure  https://kvdb.io/9tDAL53faqACSAjQTsGwmN/migration_<< parameters.workflow_id >>)
+            SUCCESS=$(curl --insecure  "https://kvdb.io/9tDAL53faqACSAjQTsGwmN/migration_<< parameters.workflow_id >>")
             # Logic for reverting the database state
             if (( $SUCCESS == 1 ));
             then
@@ -481,14 +481,15 @@ jobs:
             command: |
               if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OLDWORKFLOWID}" ]]
               then
-              aws s3 rb s3://udapeople-"${OLDWORKFLOWID}" --force
+              url="s3://udapeople-${OLDWORKFLOWID}"
+              aws s3 rb "${url}" --force
               sleep 2
               aws cloudformation delete-stack --stack-name udapeople-backend-"${OLDWORKFLOWID}" --region us-east-1
               aws cloudformation delete-stack --stack-name udapeople-frontend-"${OLDWORKFLOWID}" --region us-east-1
               else
               echo "No old stack found"
               fi
-              curl -k --insecure https://kvdb.io/9tDAL53faqACSAjQTsGwmN/old_id  -d "${CIRCLE_WORKFLOW_ID:0:7}"
+              curl -k --insecure "https://kvdb.io/9tDAL53faqACSAjQTsGwmN/old_id"  -d "${CIRCLE_WORKFLOW_ID:0:7}"
             
 workflows:
   default:
