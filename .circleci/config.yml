@@ -464,9 +464,9 @@ jobs:
         - checkout
         - run: sudo apt-get update && sudo apt-get install -y ca-certificates
         - run:
-          name: Install dependencies
-          command: |
-            apk add --update curl 
+            name: Install dependencies
+            command: |
+              apk add --update curl 
         - aws-cli/setup:
             aws-access-key-id: AWS_ACCESS_KEY_ID
             aws-region: US_EAST_1_REGION
