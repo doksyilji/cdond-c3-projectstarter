@@ -30,7 +30,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl --insecure  https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_<< parameters.workflow_id >>)
+            SUCCESS=$(curl --insecure  https://kvdb.io/9tDAL53faqACSAjQTsGwmN/migration_<< parameters.workflow_id >>)
             # Logic for reverting the database state
             if (( $SUCCESS == 1 ));
             then
@@ -462,31 +462,34 @@ jobs:
       steps:
         # Checkout code from git
         - checkout
+        - run: sudo apt-get update && sudo apt-get install -y ca-certificates
+        - run:
+          name: Install dependencies
+          command: |
+            apk add --update curl 
         - aws-cli/setup:
             aws-access-key-id: AWS_ACCESS_KEY_ID
             aws-region: US_EAST_1_REGION
             aws-secret-access-key: AWS_SECRET_ACCESS_KEY
         - run:
-            name: Get all stacks and use to detect the old ones
+            name: Get Old Stack ID
             command: |
+              export OLDWORKFLOWID=$(curl --insecure  https://kvdb.io/9tDAL53faqACSAjQTsGwmN/old_id)
               echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
-              export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+              echo OLDWORKFLOWID "${OLDWORKFLOWID}"
         - run:
             name: Remove old stacks and files
             command: |
-              for stack in ${STACKS[@]}
-              do
-              if [[ "${stack:  -7}" = "${CIRCLE_WORKFLOW_ID:0:7}" ]]; then
-              echo "Nada"
-              else
-              final=${stack:  -7}
-              fi
-              done
-              aws s3 rb s3://udapeople-"${final:  -7}" --force
-              echo aws s3 rb s3://udapeople-"${final:  -7}" --force
+              if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OLDWORKFLOWID}" ]]
+              then
+              aws s3 rb s3://udapeople-"${OLDWORKFLOWID}" --force
               sleep 2
-              aws cloudformation delete-stack --stack-name udapeople-backend-"${final:  -7}" --region us-east-1
-              aws cloudformation delete-stack --stack-name udapeople-frontend-"${final:  -7}" --region us-east-1
+              aws cloudformation delete-stack --stack-name udapeople-backend-"${OLDWORKFLOWID}" --region us-east-1
+              aws cloudformation delete-stack --stack-name udapeople-frontend-"${OLDWORKFLOWID}" --region us-east-1
+              else
+              echo "No old stack found"
+              fi
+              curl -k https://kvdb.io/9tDAL53faqACSAjQTsGwmN/old_id  -d "${CIRCLE_WORKFLOW_ID:0:7}"
             
 workflows:
   default:
