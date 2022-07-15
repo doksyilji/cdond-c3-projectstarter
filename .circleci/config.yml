@@ -471,20 +471,15 @@ jobs:
             aws-region: US_EAST_1_REGION
             aws-secret-access-key: AWS_SECRET_ACCESS_KEY
         - run:
-            name: Get Old Stack ID
-            command: |
-              export OLDWORKFLOWID=$(curl --insecure  https://kvdb.io/9tDAL53faqACSAjQTsGwmN/old_id)
-              echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
-              echo OLDWORKFLOWID "${OLDWORKFLOWID}"
-        - run:
             name: Remove old stacks and files
             command: |
+              export OLDWORKFLOWID=$(curl --insecure  https://kvdb.io/9tDAL53faqACSAjQTsGwmN/old_id)
               if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OLDWORKFLOWID}" ]]
               then
               echo ${OLDWORKFLOWID}
               url="s3://udapeople-${OLDWORKFLOWID}"
-              echo aws s3 rb "${url}" --force --region us-ease-1
-              aws s3 rb "${url}" --force --region us-ease-1
+              echo aws s3 rb "${url}" --force --region us-east-1
+              aws s3 rb "${url}" --force --region us-east-1
               sleep 2
               aws cloudformation delete-stack --stack-name udapeople-backend-"${OLDWORKFLOWID}" --region us-east-1
               aws cloudformation delete-stack --stack-name udapeople-frontend-"${OLDWORKFLOWID}" --region us-east-1
