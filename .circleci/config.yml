@@ -476,7 +476,12 @@ jobs:
             command: |
               export OLDWORKFLOWID=$(curl --insecure  https://kvdb.io/9tDAL53faqACSAjQTsGwmN/old_id)
               echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
+<<<<<<< HEAD
               echo OLDWORKFLOWID "${OLDWORKFLOWID}"
+=======
+              export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+              --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+>>>>>>> 3f84ba9118331326f6b1710723659fbf7e8f971d
         - run:
             name: Remove old stacks and files
             command: |
