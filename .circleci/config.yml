@@ -482,7 +482,7 @@ jobs:
               if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OLDWORKFLOWID}" ]]
               then
               url="s3://udapeople-${OLDWORKFLOWID}"
-              aws s3 rb "${url}" --force
+              aws s3 rb "${url}" --force --region us-ease-1
               sleep 2
               aws cloudformation delete-stack --stack-name udapeople-backend-"${OLDWORKFLOWID}" --region us-east-1
               aws cloudformation delete-stack --stack-name udapeople-frontend-"${OLDWORKFLOWID}" --region us-east-1
